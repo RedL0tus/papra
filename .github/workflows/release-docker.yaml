@@ -33,34 +33,11 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      - name: Build and push root Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ./packages/app/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: true
-          build-args: |
-            PAPRA_VERSION=${{ inputs.version }}
-            GIT_COMMIT=${{ steps.meta.outputs.git_commit }}
-            BUILD_DATE=${{ steps.meta.outputs.build_date }}
-          tags: |
-            corentinth/papra:latest-root
-            corentinth/papra:${{ inputs.version }}-root
-            ghcr.io/papra-hq/papra:latest-root
-            ghcr.io/papra-hq/papra:${{ inputs.version }}-root
 
       - name: Build and push rootless Docker image
         uses: docker/build-push-action@v6
@@ -74,9 +51,4 @@ jobs:
             GIT_COMMIT=${{ steps.meta.outputs.git_commit }}
             BUILD_DATE=${{ steps.meta.outputs.build_date }}
           tags: |
-            corentinth/papra:latest
-            corentinth/papra:latest-rootless
-            corentinth/papra:${{ inputs.version }}-rootless
-            ghcr.io/papra-hq/papra:latest
-            ghcr.io/papra-hq/papra:latest-rootless
-            ghcr.io/papra-hq/papra:${{ inputs.version }}-rootless
+            ghcr.io/redl0tus/papra:${{ inputs.version }}-rootless
